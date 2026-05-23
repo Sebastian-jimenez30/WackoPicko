@@ -1,0 +1,9 @@
+output:
+  file_path: .fluidattacks-secret-scan-results.sarif
+  format: SARIF
+ss:
+  include:
+    - .
+  exclude:
+    - node_modules
+    - vendor
