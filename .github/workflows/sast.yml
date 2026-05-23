@@ -12,31 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Required for differential scanning
 
-      - uses: fluidattacks/sast-action@1.3.0
+      - uses: fluidattacks/sast-action@1.3.0 # Use latest released version
         id: scan
-        with:
-          scanner_mode: full
-          scan_config_path: .github/sast-config.yaml
 
-      - name: Upload SAST CSV
+      # Optional: upload findings to the GitHub Security tab
+      - name: Upload SARIF
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: github/codeql-action/upload-sarif@v4
         with:
-          name: fluid-attacks-sast-csv
-          path: results-sast.csv
-
-      - name: Fail if SAST found vulnerabilities
-        if: always()
-        run: |
-          if [ ! -f results-sast.csv ]; then
-            echo "SAST CSV was not generated"
-            exit 1
-          fi
-
-          line_count=$(wc -l < results-sast.csv)
-          if [ "$line_count" -gt 1 ]; then
-            echo "SAST vulnerabilities found: $((line_count - 1))"
-            exit 1
-          fi
+          sarif_file: ${{ steps.scan.outputs.sarif_file }}

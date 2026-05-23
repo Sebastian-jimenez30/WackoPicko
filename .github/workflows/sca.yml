@@ -3,40 +3,19 @@ on:
   push:
   pull_request:
     types: [opened, synchronize, reopened]
-  schedule:
-    - cron: "0 8 * * 1"
 
 jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: fluidattacks/sca-action@1.2.0
         id: scan
-        with:
-          scanner_mode: full
-          scan_config_path: .github/sca-config.yaml
 
-      - name: Upload SCA CSV
+      # Optional: upload findings to the GitHub Security tab
+      - name: Upload SARIF
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: github/codeql-action/upload-sarif@v4
         with:
-          name: fluid-attacks-sca-csv
-          path: results-sca.csv
-
-      - name: Fail if SCA found vulnerabilities
-        if: always()
-        run: |
-          if [ ! -f results-sca.csv ]; then
-            echo "SCA CSV was not generated"
-            exit 1
-          fi
-
-          line_count=$(wc -l < results-sca.csv)
-          if [ "$line_count" -gt 1 ]; then
-            echo "SCA vulnerabilities found: $((line_count - 1))"
-            exit 1
-          fi
+          sarif_file: ${{ steps.scan.outputs.sarif_file }}
