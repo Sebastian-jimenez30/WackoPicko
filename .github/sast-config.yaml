@@ -1,7 +1,7 @@
 language: EN
 strict: true
 output:
-  file_path: .fluidattacks-sast-results.csv
+  file_path: results-sast.csv
   format: CSV
 sast:
   include:

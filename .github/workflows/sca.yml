@@ -25,4 +25,18 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: fluid-attacks-sca-csv
-          path: .fluidattacks-sca-results.csv
+          path: results-sca.csv
+
+      - name: Fail if SCA found vulnerabilities
+        if: always()
+        run: |
+          if [ ! -f results-sca.csv ]; then
+            echo "SCA CSV was not generated"
+            exit 1
+          fi
+
+          line_count=$(wc -l < results-sca.csv)
+          if [ "$line_count" -gt 1 ]; then
+            echo "SCA vulnerabilities found: $((line_count - 1))"
+            exit 1
+          fi
