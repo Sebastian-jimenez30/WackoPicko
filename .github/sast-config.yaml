@@ -1,5 +1,6 @@
 language: EN
 strict: true
+strictness_threshold: HIGH
 output:
   file_path: results-sast.csv
   format: CSV
