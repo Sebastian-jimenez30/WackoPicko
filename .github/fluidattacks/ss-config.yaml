@@ -1,6 +1,6 @@
 output:
-  file_path: .fluidattacks-secret-scan-results.sarif
-  format: SARIF
+  file_path: .fluidattacks-secret-scan-results.csv
+  format: CSV
 ss:
   include:
     - .
