@@ -1,10 +1,10 @@
-name: SAST
+name: SCA
 on:
   push:
   pull_request:
     types: [opened, synchronize, reopened]
   schedule:
-    - cron: "0 8 * * 1" # optional: weekly full scan every Monday at 8am
+    - cron: "0 8 * * 1"
 
 jobs:
   scan:
@@ -14,15 +14,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: fluidattacks/sast-action@1.3.0
+      - uses: fluidattacks/sca-action@1.2.0
         id: scan
         with:
           scanner_mode: full
-          scan_config_path: .github/sast-config.yaml
+          scan_config_path: .github/sca-config.yaml
 
-      - name: Upload SAST CSV
+      - name: Upload SCA CSV
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: fluid-attacks-sast-csv
-          path: .fluidattacks-sast-results.csv
+          name: fluid-attacks-sca-csv
+          path: .fluidattacks-sca-results.csv
